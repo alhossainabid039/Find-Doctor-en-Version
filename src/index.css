@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@utility glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+
+  .dark & {
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+@utility bg-mesh {
+  background: 
+    radial-gradient(at 0% 0%, #d1e9ff 0, transparent 50%), 
+    radial-gradient(at 100% 0%, #e1d5ff 0, transparent 50%), 
+    radial-gradient(at 100% 100%, #ffe0e0 0, transparent 50%), 
+    radial-gradient(at 0% 100%, #d8f5e1 0, transparent 50%);
+  background-attachment: fixed;
+  background-color: #f8fafc;
+
+  .dark & {
+    background: 
+      radial-gradient(at 0% 0%, #1e293b 0, transparent 50%), 
+      radial-gradient(at 100% 0%, #0f172a 0, transparent 50%), 
+      radial-gradient(at 100% 100%, #1e1b4b 0, transparent 50%), 
+      radial-gradient(at 0% 100%, #0f172a 0, transparent 50%);
+    background-color: #020617;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-mesh min-h-screen text-slate-800 dark:text-slate-200 antialiased transition-colors duration-300;
+  }
+}

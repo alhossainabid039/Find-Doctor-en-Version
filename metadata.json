@@ -1,0 +1,6 @@
+{
+  "name": "MediConnect AI",
+  "description": "An AI-powered medical doctor booking system. Analyze symptoms with an AI chatbot, find the right specialists, and book appointments seamlessly.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
