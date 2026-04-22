@@ -4,11 +4,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Doctor } from '../types';
 import { ArrowLeft, Star, MapPin, Clock, Award, ShieldCheck, CheckCircle2, ChevronRight, User, Stethoscope } from 'lucide-react';
 import { useUser } from '../context/UserContext';
+import { useNotifications } from '../context/NotificationContext';
 
 export function DoctorDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useUser();
+  const { addNotification } = useNotifications();
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
@@ -46,6 +48,22 @@ export function DoctorDetail() {
       });
       if (res.ok) {
         setBookingSuccess(true);
+        // Add App Reminder
+        addNotification(
+          'Appointment Confirmed',
+          `Your session with ${doctor.name} at ${selectedSlot} has been scheduled. A confirmation email has been sent to ${user?.email || 'your registered email'}.`,
+          'success'
+        );
+        
+        // Simulate a reminder notification appearing after a short delay (e.g. for "Upcoming" reminder)
+        setTimeout(() => {
+          addNotification(
+            'Upcoming Appointment',
+            `Reminder: Your appointment with ${doctor.name} is starting in 30 minutes.`,
+            'warning'
+          );
+        }, 8000);
+
         setTimeout(() => navigate('/dashboard'), 2000);
       }
     } catch (err) {
@@ -127,7 +145,7 @@ export function DoctorDetail() {
                             <CheckCircle2 size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] uppercase font-bold text-slate-400">Consultation Fee</p>
+                            <p className="text-[10px] uppercase font-bold text-slate-500">Consultation Fee</p>
                             <p className="text-xl font-extrabold text-slate-800 dark:text-slate-100">${doctor.fee}</p>
                         </div>
                     </div>
@@ -136,7 +154,7 @@ export function DoctorDetail() {
                             <Clock size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] uppercase font-bold text-slate-400">Response Time</p>
+                            <p className="text-[10px] uppercase font-bold text-slate-500">Response Time</p>
                             <p className="text-xl font-extrabold text-slate-800 dark:text-slate-100">&lt; 15 Mins</p>
                         </div>
                     </div>
@@ -196,7 +214,7 @@ export function DoctorDetail() {
                     )}
                 </button>
 
-                <p className="text-[10px] text-neutral-400 text-center uppercase tracking-widest font-bold">
+                <p className="text-[10px] text-slate-500 text-center uppercase tracking-widest font-bold">
                     Secure Payment & Free Cancellation
                 </p>
             </div>

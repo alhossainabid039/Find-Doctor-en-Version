@@ -13,12 +13,14 @@ import { ChatWidget } from './components/ChatWidget';
 
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider } from './context/UserContext';
+import { NotificationProvider } from './context/NotificationContext';
 
 export default function App() {
   return (
     <ThemeProvider>
       <UserProvider>
-        <Router>
+        <NotificationProvider>
+          <Router>
           <div className="min-h-screen bg-mesh font-sans text-slate-800 dark:text-slate-100 overflow-x-hidden transition-colors duration-300">
             <Navbar />
             <main className="pt-20 pb-24">
@@ -32,6 +34,7 @@ export default function App() {
             <ChatWidget />
           </div>
         </Router>
+        </NotificationProvider>
       </UserProvider>
     </ThemeProvider>
   );

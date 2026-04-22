@@ -177,7 +177,7 @@ export function ChatWidget() {
                         >
                           <Sparkles size={14} className="text-blue-500" />
                         </motion.div>
-                        <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Medical Analysis</p>
+                        <p className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Medical Analysis</p>
                       </div>
                       <div className="flex gap-1.5 items-center px-1">
                         {[0, 1, 2].map((i) => (
@@ -232,7 +232,7 @@ export function ChatWidget() {
                         <Send size={18} />
                     </button>
                 </div>
-                <p className="mt-2 text-[10px] text-slate-400 text-center font-bold uppercase tracking-wider flex items-center justify-center gap-1">
+                <p className="mt-2 text-[10px] text-slate-500 dark:text-slate-400 text-center font-bold uppercase tracking-wider flex items-center justify-center gap-1">
                     <AlertCircle size={10} />
                     AI recommendations are not formal diagnoses.
                 </p>

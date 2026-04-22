@@ -123,6 +123,17 @@ async function startServer() {
     }
 
     const db = await getDb();
+    
+    // Find doctor and remove slot
+    const doctorIndex = db.doctors.findIndex((d: any) => d.id === doctorId);
+    if (doctorIndex === -1) return res.status(404).json({ error: "Doctor not found" });
+    
+    const doctor = db.doctors[doctorIndex];
+    const slotIndex = doctor.slots.indexOf(slot);
+    if (slotIndex === -1) return res.status(400).json({ error: "Slot not available" });
+    
+    doctor.slots.splice(slotIndex, 1);
+
     const appointment = {
       id: Date.now().toString(),
       doctorId,
@@ -136,6 +147,37 @@ async function startServer() {
     db.appointments.push(appointment);
     await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
     res.status(201).json(appointment);
+  });
+
+  app.delete("/api/appointments/:id", async (req, res) => {
+    const db = await getDb();
+    const appIndex = db.appointments.findIndex((a: any) => a.id === req.params.id);
+    if (appIndex === -1) return res.status(404).json({ error: "Appointment not found" });
+
+    const appointment = db.appointments[appIndex];
+    
+    // Restore slot to doctor
+    const doctor = db.doctors.find((d: any) => d.id === appointment.doctorId);
+    if (doctor) {
+      if (!doctor.slots.includes(appointment.slot)) {
+        doctor.slots.push(appointment.slot);
+        // Better time sorting for strings like "09:00 AM"
+        doctor.slots.sort((a: string, b: string) => {
+          const parseTime = (t: string) => {
+            const [time, period] = t.split(' ');
+            let [hours, minutes] = time.split(':').map(Number);
+            if (period === 'PM' && hours !== 12) hours += 12;
+            if (period === 'AM' && hours === 12) hours = 0;
+            return hours * 60 + minutes;
+          };
+          return parseTime(a) - parseTime(b);
+        });
+      }
+    }
+
+    db.appointments.splice(appIndex, 1);
+    await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+    res.status(204).send();
   });
 
   app.get("/api/appointments", async (req, res) => {
