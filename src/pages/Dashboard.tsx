@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Appointment, Doctor, UserProfile } from '../types';
 import { Calendar, Clock, MapPin, CheckCircle2, ChevronRight, User, Stethoscope, ArrowRight, Edit3, X, Save, Phone, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 export function Dashboard() {
   const [appointments, setAppointments] = useState<(Appointment & { doctor?: Doctor })[]>([]);
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const { user, refreshUser } = useUser();
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({ name: '', email: '', phone: '' });
@@ -14,14 +15,12 @@ export function Dashboard() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [appRes, docRes, userRes] = await Promise.all([
+        const [appRes, docRes] = await Promise.all([
           fetch('/api/appointments'),
-          fetch('/api/doctors'),
-          fetch('/api/user')
+          fetch('/api/doctors')
         ]);
         const apps = await appRes.json();
         const docs = await docRes.json();
-        const userData = await userRes.json();
         
         const EnrichedApps = apps.map((app: Appointment) => ({
           ...app,
@@ -29,8 +28,6 @@ export function Dashboard() {
         }));
         
         setAppointments(EnrichedApps.reverse());
-        setUser(userData);
-        setEditForm({ name: userData.name, email: userData.email, phone: userData.phone });
       } catch (err) {
         console.error(err);
       } finally {
@@ -39,6 +36,12 @@ export function Dashboard() {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+        setEditForm({ name: user.name, email: user.email, phone: user.phone });
+    }
+  }, [user]);
 
   const handleUpdateProfile = async (e: FormEvent) => {
     e.preventDefault();
@@ -49,8 +52,7 @@ export function Dashboard() {
         body: JSON.stringify(editForm)
       });
       if (res.ok) {
-        const updatedUser = await res.json();
-        setUser(updatedUser);
+        await refreshUser();
         setIsEditing(false);
       }
     } catch (err) {

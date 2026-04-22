@@ -1,10 +1,14 @@
 import { motion } from 'motion/react';
-import { ArrowRight, ShieldCheck, Clock, Award, Star, MessageSquare } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Clock, Award, Star, MessageSquare, Heart, Brain, Activity, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function Home() {
+  const triggerChat = (symptom: string) => {
+    window.dispatchEvent(new CustomEvent('open-chat', { detail: { message: symptom } }));
+  };
+
   return (
-    <div className="space-y-24 pb-24">
+    <div className="space-y-24 pb-24 text-slate-800 dark:text-slate-100 transition-colors">
       {/* Hero Section */}
       <section className="px-6 pt-24 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -26,11 +30,18 @@ export function Home() {
             <div className="flex flex-wrap gap-4 px-2">
               <Link
                 to="/doctors"
-                className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold flex items-center gap-3 hover:bg-blue-700 transition-all shadow-lg shadow-blue-100"
+                className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold flex items-center gap-3 hover:bg-blue-700 transition-all shadow-lg shadow-blue-100/20"
               >
                 Find a Doctor
                 <ArrowRight size={20} />
               </Link>
+              <button 
+                onClick={() => triggerChat("")}
+                className="px-8 py-4 glass text-blue-600 rounded-2xl font-bold flex items-center gap-3 hover:bg-white/50 transition-all shadow-sm"
+              >
+                Chat with AI
+                <MessageSquare size={20} />
+              </button>
             </div>
           </motion.div>
 
@@ -48,6 +59,34 @@ export function Home() {
             </div>
           </motion.div>
         </div>
+      </section>
+
+      {/* Symptom Scanner Section */}
+      <section className="max-w-7xl mx-auto px-6 space-y-12">
+            <div className="text-center space-y-4">
+                <h2 className="text-4xl font-black tracking-tight">AI Symptom Scanner</h2>
+                <p className="text-slate-500 dark:text-slate-400 font-medium max-w-xl mx-auto">Select a category to start your AI-guided consultation. Your path to recovery starts with a conversation.</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {[
+                    { name: 'Chest Pain', icon: Heart, color: 'text-rose-500', bg: 'bg-rose-100 dark:bg-rose-900/30' },
+                    { name: 'Headaches', icon: Brain, color: 'text-purple-500', bg: 'bg-purple-100 dark:bg-purple-900/30' },
+                    { name: 'Fever/Cough', icon: Activity, color: 'text-blue-500', bg: 'bg-blue-100 dark:bg-blue-900/30' },
+                    { name: 'Skin Rash', icon: Zap, color: 'text-orange-500', bg: 'bg-orange-100 dark:bg-orange-900/30' },
+                ].map((symptom) => (
+                    <motion.button
+                        key={symptom.name}
+                        whileHover={{ y: -8, scale: 1.02 }}
+                        onClick={() => triggerChat(`I am experiencing ${symptom.name.toLowerCase()}`)}
+                        className="glass p-8 rounded-[3rem] shadow-sm flex flex-col items-center text-center gap-6 group cursor-pointer border border-transparent hover:border-blue-500/30 transition-all duration-300"
+                    >
+                        <div className={`w-20 h-20 ${symptom.bg} rounded-[2rem] flex items-center justify-center transition-transform group-hover:scale-110 shadow-inner group-hover:rotate-6`}>
+                            <symptom.icon className={symptom.color} size={36} />
+                        </div>
+                        <h4 className="font-bold text-lg">{symptom.name}</h4>
+                    </motion.button>
+                ))}
+            </div>
       </section>
 
       {/* Features Section */}

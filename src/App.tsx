@@ -12,24 +12,27 @@ import { Dashboard } from './pages/Dashboard';
 import { ChatWidget } from './components/ChatWidget';
 
 import { ThemeProvider } from './context/ThemeContext';
+import { UserProvider } from './context/UserContext';
 
 export default function App() {
   return (
     <ThemeProvider>
-      <Router>
-        <div className="min-h-screen bg-mesh font-sans text-slate-800 dark:text-slate-100 overflow-x-hidden transition-colors duration-300">
-          <Navbar />
-          <main className="pt-20 pb-24">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/doctors" element={<Doctors />} />
-              <Route path="/doctors/:id" element={<DoctorDetail />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Routes>
-          </main>
-          <ChatWidget />
-        </div>
-      </Router>
+      <UserProvider>
+        <Router>
+          <div className="min-h-screen bg-mesh font-sans text-slate-800 dark:text-slate-100 overflow-x-hidden transition-colors duration-300">
+            <Navbar />
+            <main className="pt-20 pb-24">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/doctors" element={<Doctors />} />
+                <Route path="/doctors/:id" element={<DoctorDetail />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+              </Routes>
+            </main>
+            <ChatWidget />
+          </div>
+        </Router>
+      </UserProvider>
     </ThemeProvider>
   );
 }

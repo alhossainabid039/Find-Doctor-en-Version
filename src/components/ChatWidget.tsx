@@ -39,9 +39,14 @@ export function ChatWidget() {
   }, [messages, isTyping]);
 
   useEffect(() => {
-    const handleOpen = () => setIsOpen(true);
-    window.addEventListener('open-chat', handleOpen);
-    return () => window.removeEventListener('open-chat', handleOpen);
+    const handleOpen = (e: any) => {
+        setIsOpen(true);
+        if (e.detail?.message) {
+            setInput(e.detail.message);
+        }
+    };
+    window.addEventListener('open-chat', handleOpen as EventListener);
+    return () => window.removeEventListener('open-chat', handleOpen as EventListener);
   }, []);
 
   const handleSend = async () => {
@@ -118,7 +123,7 @@ export function ChatWidget() {
             </div>
 
             {/* Messages */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 bg-white/30">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 bg-white/30 dark:bg-slate-900/10">
               {messages.map((msg, i) => (
                 <motion.div
                   key={i}
@@ -130,7 +135,7 @@ export function ChatWidget() {
                     <div className={`p-4 rounded-2xl text-sm shadow-sm ${
                       msg.role === 'user' 
                         ? 'bg-blue-600 text-white rounded-tr-none shadow-md' 
-                        : 'bg-slate-100 text-slate-700 rounded-tl-none border border-slate-200/50'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-tl-none border border-slate-200/50 dark:border-slate-700/50'
                     }`}>
                       {msg.content.includes("[Click here") ? (
                           <>
@@ -152,25 +157,59 @@ export function ChatWidget() {
                 </motion.div>
               ))}
               {isTyping && (
-                <div className="flex justify-start">
-                   <div className="bg-slate-100 p-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-200/50 flex gap-1 items-center">
-                      <p className="text-sm text-slate-500 italic mr-2">Analyzing...</p>
-                      <div className="w-1 h-1 bg-slate-400 rounded-full animate-bounce" />
-                      <div className="w-1 h-1 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]" />
-                      <div className="w-1 h-1 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+                <motion.div 
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex justify-start"
+                >
+                   <div className="bg-slate-100 dark:bg-slate-800/80 p-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-200/50 dark:border-slate-700/50 flex flex-col gap-2 min-w-[120px]">
+                      <div className="flex items-center gap-2">
+                        <motion.div
+                          animate={{ 
+                            scale: [1, 1.2, 1],
+                            opacity: [0.5, 1, 0.5]
+                          }}
+                          transition={{ 
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                        >
+                          <Sparkles size={14} className="text-blue-500" />
+                        </motion.div>
+                        <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Medical Analysis</p>
+                      </div>
+                      <div className="flex gap-1.5 items-center px-1">
+                        {[0, 1, 2].map((i) => (
+                           <motion.div
+                             key={i}
+                             animate={{ 
+                               y: [0, -4, 0],
+                               opacity: [0.3, 1, 0.3]
+                             }}
+                             transition={{ 
+                               duration: 0.8,
+                               repeat: Infinity,
+                               delay: i * 0.15,
+                               ease: "easeInOut"
+                             }}
+                             className="w-1.5 h-1.5 bg-blue-500 rounded-full"
+                           />
+                        ))}
+                      </div>
                    </div>
-                </div>
+                </motion.div>
               )}
             </div>
 
             {/* Input area */}
-            <div className="p-4 bg-white/50 border-t border-slate-100/50">
+            <div className="p-4 bg-white/50 dark:bg-slate-900/50 border-t border-slate-100/50 dark:border-slate-800/50">
                 <div className="flex flex-wrap gap-2 mb-4">
                     {['Chest pain', 'Skin rash', 'Stomach ache'].map((reply) => (
                         <button
                             key={reply}
                             onClick={() => handleQuickReply(reply)}
-                            className="px-3 py-1.5 text-[10px] bg-white border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
+                            className="px-3 py-1.5 text-[10px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm"
                         >
                             "{reply}"
                         </button>
@@ -183,7 +222,7 @@ export function ChatWidget() {
                         onChange={(e) => setInput(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                         placeholder="Type symptoms..."
-                        className="w-full bg-slate-100 border-none rounded-2xl py-4 pl-5 pr-14 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                        className="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-2xl py-4 pl-5 pr-14 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-700 transition-all text-slate-800 dark:text-slate-100"
                     />
                     <button
                         onClick={handleSend}

@@ -3,10 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Doctor } from '../types';
 import { ArrowLeft, Star, MapPin, Clock, Award, ShieldCheck, CheckCircle2, ChevronRight, User, Stethoscope } from 'lucide-react';
+import { useUser } from '../context/UserContext';
 
 export function DoctorDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useUser();
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
@@ -38,8 +40,8 @@ export function DoctorDetail() {
         body: JSON.stringify({
           doctorId: doctor.id,
           slot: selectedSlot,
-          patientName: "John Doe", // Mock name
-          patientEmail: "john@example.com"
+          patientName: user?.name || "Guest Patient",
+          patientEmail: user?.email || "guest@example.com"
         })
       });
       if (res.ok) {

@@ -2,10 +2,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Stethoscope, Calendar, LayoutDashboard, User, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
 
 export function Navbar() {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { user } = useUser();
 
   const navItems = [
     { name: 'Find Doctor', path: '/doctors', icon: Stethoscope },
@@ -45,11 +47,11 @@ export function Navbar() {
           <div className="h-4 w-px bg-slate-300 dark:bg-slate-700 mx-2" />
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
-                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">Marcus Aurelius</p>
-                <p className="text-xs text-slate-500">Premium Patient</p>
+                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">{user?.name || 'Guest'}</p>
+                <p className="text-xs text-slate-500">{user?.memberStatus || 'Sign In'}</p>
             </div>
             <div className="w-10 h-10 bg-slate-200 dark:bg-slate-800 rounded-full border-2 border-white dark:border-slate-700 shadow-sm overflow-hidden">
-                <img src="https://i.pravatar.cc/100?u=marcus" alt="Avatar" />
+                <img src={user?.image || "https://i.pravatar.cc/100?u=marcus"} alt="Avatar" />
             </div>
           </div>
         </div>

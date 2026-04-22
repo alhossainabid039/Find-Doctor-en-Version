@@ -78,8 +78,9 @@ export function Doctors() {
                     key={doc.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
+                    whileHover={{ y: -8, scale: 1.02 }}
                     transition={{ delay: i * 0.1 }}
-                    className="group glass p-5 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 flex flex-col space-y-4 border-l-4 border-l-blue-500"
+                    className="group glass p-5 rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 flex flex-col space-y-4 border-l-4 border-l-blue-500"
                 >
                     <div className="flex items-start justify-between">
                         <div className="flex items-center gap-4">
